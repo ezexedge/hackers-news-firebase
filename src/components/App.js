@@ -6,12 +6,25 @@ import SearchLinks from './Link/SearchLinks'
 import LinkList from './Link/LinkList'
 import ForgotPassword from './Auth/ForgotPassword'
 import Login from './Auth/Login'
+import Header from './Header'
+import userAuth from './Auth/useAuth'
+import firebase,{FirebaseContext} from '../firebase'
+
 function App() {
+  const user = userAuth()
   return (
     
     <BrowserRouter>
-   
-      <Switch>
+
+      <FirebaseContext.Provider  value={{user,firebase}}>
+      <div className="app-container">
+
+        <Header/>
+      
+    
+        <div className="route-container" >
+
+     <Switch>
     
         <Route exact path="/" render={()=> <Redirect to="/new/1" /> } />
           <Route  path="/create" component={CreateLink} />
@@ -24,7 +37,13 @@ function App() {
           
       </Switch>
     
-    </BrowserRouter>
+
+
+      
+      </div>
+      </div>
+           </FirebaseContext.Provider>
+         </BrowserRouter>
   
   );
 }
