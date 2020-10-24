@@ -1,16 +1,38 @@
 import React from "react";
 import userFormValidation from '../Auth/useFormValidation'
 import validateCreateLink from '../Auth/validateCreateLink'
+import FirebaseContext from '../../firebase/context'
+
+
 const INITIAL_STATE = {
   description : "",
   url : ""
 }
 function CreateLink(props) {
-
+  const {firebase, user} = React.useContext(FirebaseContext)
   const {handleSubmit ,errors, handleChange,values} = userFormValidation(INITIAL_STATE,validateCreateLink,handleCreateLink)
 
   function handleCreateLink(){
-    console.log('link create')
+    if(!user){
+      props.history.push('/login')
+
+    }else{
+      const {url,description} = values
+      const newLink = {
+        url,
+        description,
+        postedBy:{
+          id:user.uid,
+          name:user.displayName
+        },
+        votes:[],
+        comments:[],
+        created: Date.now()
+
+      }
+      firebase.db.collection("links").add(newLink)
+      props.history.push('/')
+    }
   }
 
 
